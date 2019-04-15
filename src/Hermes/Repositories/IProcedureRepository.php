@@ -2,7 +2,7 @@
 
 namespace Hermes\Repositories;
 
-use Hermes\Entities\Procedure;
+use Hermes\Entities\InProgressProcedure;
 use JeyDotC\IEnumerable;
 
 /**
@@ -11,9 +11,9 @@ use JeyDotC\IEnumerable;
  */
 interface IProcedureRepository
 {
-    public function save(Procedure $newProcedure): Procedure;
+    public function save(InProgressProcedure $newProcedure): InProgressProcedure;
     
-    public function update(Procedure $existingProcedure);
+    public function update(InProgressProcedure $existingProcedure);
     
     public function all(): IEnumerable;
 }

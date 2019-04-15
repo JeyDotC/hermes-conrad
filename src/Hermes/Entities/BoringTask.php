@@ -3,7 +3,6 @@
 namespace Hermes\Entities;
 
 use Hermes\ValueObjects\IBoringTaskComponent;
-use JeyDotC\Enumerable;
 use JeyDotC\EnumerableList;
 use JeyDotC\IEnumerable;
 use JeyDotC\IList;
@@ -22,12 +21,6 @@ class BoringTask
      *
      * @var IList
      */
-    private $processes;
-
-    /**
-     *
-     * @var IList
-     */
     private $components;
 
     public static function create($id = 0): BoringTask {
@@ -36,31 +29,11 @@ class BoringTask
 
     function __construct($id, IList $components) {
         $this->id = $id;
-        $this->processes = EnumerableList::empty();
         $this->components = $components;
     }
 
     function getId() {
         return $this->id;
-    }
-
-    function hasProcess($bureocratInCharge) {
-        return $this->processes->where(function(BureocratProcess $process) use ($bureocratInCharge) {
-                            return $process->getBureocratOfficerIncharge() == $bureocratInCharge;
-                        })
-                        ->any();
-    }
-
-    function getProcess($bureocratInCharge): BureocratProcess {
-        return $this->processes->first(function(BureocratProcess $process) use ($bureocratInCharge) {
-                    return $process->getBureocratOfficerIncharge() == $bureocratInCharge;
-                });
-    }
-
-    public function openProces($bureocratOfficerIncharge) {
-        if (!$this->hasProcess($bureocratOfficerIncharge)) {
-            $this->processes->add(new BureocratProcess($bureocratOfficerIncharge, Enumerable::empty()));
-        }
     }
 
     function hasComponent($className): bool {

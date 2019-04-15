@@ -14,9 +14,9 @@ final class Stamp
     const STATUS_STARTED = 'started';
     const STATUS_COMPLETED = 'completed';
     const STATUS_FAILED_RESUMABLE = 'failed_resumable';
+    const STATUS_FAILED_DEFINITIVE = 'failed_definitive';
     const STATUS_STAND_BY = 'stand_by';
     const STATUS_DELEGATED = 'delegated';
-    const STATUS_ERROR = 'error';
 
     private $timeStamp;
     private $status;

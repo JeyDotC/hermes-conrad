@@ -4,7 +4,7 @@ namespace Hermes\Events;
 
 use Hermes\Entities\BoringTask;
 use Hermes\Entities\BureocratOfficer;
-use Hermes\Entities\Procedure;
+use Hermes\Entities\InProgressProcedure;
 
 /**
  * Description of OfficerEvent
@@ -26,7 +26,7 @@ abstract class OfficerEvent extends ProcedureEvent
      */
     private $task;
 
-    public function __construct(Procedure $procedure, BureocratOfficer $officer, BoringTask $task) {
+    public function __construct(InProgressProcedure $procedure, BureocratOfficer $officer, BoringTask $task) {
         parent::__construct($procedure); 
         $this->officer = $officer;
         $this->task = $task;

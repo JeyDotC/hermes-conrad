@@ -3,8 +3,8 @@
 namespace Hermes\Services;
 
 use Exception;
-use Hermes\Entities\BureocratOfficer;
-use Hermes\Entities\Procedure;
+use Hermes\Entities\BureocratProcess;
+use Hermes\Entities\InProgressProcedure;
 use Hermes\Events\OfficerCompletedEvent;
 use Hermes\Events\OfficerFailedEvent;
 use Hermes\Events\ProcedureStartedEvent;
@@ -22,21 +22,19 @@ class BureocratProcedureRunner
     
     private $procedureStartedListeners = [];
     
-    public function run(Procedure $procedure){
+    public function run(InProgressProcedure $procedure){
         
         $this->procedureStarted(new ProcedureStartedEvent($procedure));
 
-        foreach ($procedure->getBureocratOfficers() as /** @var BureocratOfficer $officer */ $officer) {
+        foreach ($procedure->getProcesses() as /** @var BureocratProcess $process */ $process) {
 
             $task = $procedure->getBoringTask();
             
-            $task->openProces($officer->getId());
-
             try {
-                $officer->performTask($task);
-                $this->officerCompleted(new OfficerCompletedEvent($procedure, $officer, $task));
+                $process->performTask($task);
+                $this->officerCompleted(new OfficerCompletedEvent($procedure, $process->getBureocratOfficerIncharge(), $task));
             } catch (Exception $ex) {
-                $officerFailed = new OfficerFailedEvent($ex, $procedure, $officer, $task);
+                $officerFailed = new OfficerFailedEvent($ex, $procedure, $process->getBureocratOfficerIncharge(), $task);
                 $this->officerFailed($officerFailed);
                 
                 $actionToTake = $officerFailed->getActionToTake();
