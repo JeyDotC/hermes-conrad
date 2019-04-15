@@ -1,0 +1,13 @@
+{
+    "name": "jobsity/hermes-conrad",
+    "description": "Description of project hermes-conrad.",
+    "authors": [
+        {
+            "name": "Jeysson Guevara",
+            "email": "jeysson.guevara@jobsity.io"
+        }
+    ],
+    "require": {
+        "jeydotc/jeydotc-enumerable": "dev-master"
+    }
+}
