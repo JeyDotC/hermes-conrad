@@ -1,15 +1,15 @@
 <?php
-namespace Hermes\Entities;
+namespace Hermes\Bureau;
 
-use Hermes\Services\IBureocratService;
+use Hermes\Bureau\Services\IBureaucratService;
 
 
 /**
- * Description of BureocratOfficer
+ * Description of BureaucratOfficer
  *
  * @author jguevara
  */
-class BureocratOfficer
+class BureaucratOfficer
 {
 
     private $id;
@@ -17,11 +17,11 @@ class BureocratOfficer
 
     /**
      *
-     * @var IBureocratService
+     * @var IBureaucratService
      */
     private $function;
 
-    public function __construct(int $id, $name, IBureocratService $function) {
+    public function __construct(int $id, $name, IBureaucratService $function) {
         $this->id = $id;
         $this->name = $name;
         $this->function = $function;
@@ -35,7 +35,7 @@ class BureocratOfficer
         return $this->name;
     }
 
-    public function getFunction(): IBureocratService {
+    public function getFunction(): IBureaucratService {
         return $this->function;
     }
 }

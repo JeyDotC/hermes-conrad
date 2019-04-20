@@ -1,18 +1,18 @@
 <?php
 
-namespace Hermes\Entities;
+namespace Hermes\Bureau;
 
-use Hermes\ValueObjects\IBoringTaskComponent;
+use Hermes\Bureau\IFormComponent;
 use JeyDotC\EnumerableList;
 use JeyDotC\IEnumerable;
 use JeyDotC\IList;
 
 /**
- * Description of BoringTask
+ * Description of Form
  *
  * @author jguevara
  */
-class BoringTask
+class Form
 {
 
     private $id;
@@ -23,7 +23,7 @@ class BoringTask
      */
     private $components;
 
-    public static function create($id = 0): BoringTask {
+    public static function create($id = 0): Form {
         return new static($id, EnumerableList::empty());
     }
 
@@ -40,7 +40,7 @@ class BoringTask
         return $this->components->ofType($className)->any();
     }
 
-    function getComponent($className): IBoringTaskComponent {
+    function getComponent($className): IFormComponent {
         return $this->components->ofType($className)->firstOrDefault();
     }
 
@@ -48,7 +48,7 @@ class BoringTask
         return $this->components->ofType($className);
     }
 
-    public function addComponent(IBoringTaskComponent $component): BoringTask {
+    public function addComponent(IFormComponent $component): Form {
         $this->components->add($component);
         return $this;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Hermes\Events;
+namespace Hermes\Bureau\Events;
 
 /**
  * Description of OfficerCompletedEvent

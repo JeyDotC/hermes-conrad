@@ -1,11 +1,11 @@
 <?php
 
-namespace Hermes\Events;
+namespace Hermes\Bureau\Events;
 
 use Exception;
-use Hermes\Entities\BoringTask;
-use Hermes\Entities\BureocratOfficer;
-use Hermes\Entities\InProgressProcedure;
+use Hermes\Bureau\Form;
+use Hermes\Bureau\BureaucratOfficer;
+use Hermes\Bureau\Procedure;
 
 /**
  * Description of OfficerFailedEvent
@@ -22,7 +22,7 @@ class OfficerFailedEvent extends OfficerEvent
     private $exception;
     private $actionToTake = self::FAIL;
 
-    public function __construct(\Exception $exception, InProgressProcedure $procedure, BureocratOfficer $officer, BoringTask $task) {
+    public function __construct(\Exception $exception, Procedure $procedure, BureaucratOfficer $officer, Form $task) {
         parent::__construct($procedure, $officer, $task);
         $this->exception = $exception;
     }

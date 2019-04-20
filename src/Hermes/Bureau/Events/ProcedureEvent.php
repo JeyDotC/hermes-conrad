@@ -1,8 +1,8 @@
 <?php
 
-namespace Hermes\Events;
+namespace Hermes\Bureau\Events;
 
-use Hermes\Entities\InProgressProcedure;
+use Hermes\Bureau\Procedure;
 
 /**
  * Description of ProcedureEvent
@@ -14,15 +14,15 @@ abstract class ProcedureEvent
 
     /**
      *
-     * @var InProgressProcedure
+     * @var Procedure
      */
     private $procedure;
 
-    public function __construct(InProgressProcedure $procedure) {
+    public function __construct(Procedure $procedure) {
         $this->procedure = $procedure;
     }
 
-    public function getProcedure(): InProgressProcedure {
+    public function getProcedure(): Procedure {
         return $this->procedure;
     }
 }

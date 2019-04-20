@@ -1,12 +1,12 @@
 <?php
 
-namespace Hermes\ValueObjects;
+namespace Hermes\Bureau;
 
 /**
  *
  * @author jguevara
  */
-interface IBoringTaskComponent
+interface IFormComponent
 {
     //put your code here
 }

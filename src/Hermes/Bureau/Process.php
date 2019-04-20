@@ -1,27 +1,27 @@
 <?php
 
-namespace Hermes\Entities;
+namespace Hermes\Bureau;
 
-use Hermes\Exceptions\RecoverableTaskFailedException;
-use Hermes\ValueObjects\Stamp;
+use Hermes\Bureau\Exceptions\RecoverableTaskFailedException;
+use Hermes\Bureau\Stamp;
 use JeyDotC\Enumerable;
 use JeyDotC\EnumerableList;
 use JeyDotC\IEnumerable;
 use JeyDotC\IList;
 
 /**
- * Description of BureocratProcess
+ * Description of BureaucratProcess
  *
  * @author jguevara
  */
-class BureocratProcess
+class Process
 {
 
     /**
      *
-     * @var BureocratOfficer
+     * @var BureaucratOfficer
      */
-    private $bureocratOfficerIncharge;
+    private $BureaucratOfficerIncharge;
 
     /**
      *
@@ -29,19 +29,19 @@ class BureocratProcess
      */
     private $stamps;
 
-    public static function create(BureocratOfficer $officerInCharge) {
+    public static function create(BureaucratOfficer $officerInCharge) {
         return new static($officerInCharge, Enumerable::empty());
     }
 
-    function __construct(BureocratOfficer $bureocratOfficerIncharge, IEnumerable $stamps) {
-        $this->bureocratOfficerIncharge = $bureocratOfficerIncharge;
+    function __construct(BureaucratOfficer $BureaucratOfficerIncharge, IEnumerable $stamps) {
+        $this->BureaucratOfficerIncharge = $BureaucratOfficerIncharge;
         $this->stamps = EnumerableList::from($stamps->orderBy(function (Stamp $stamp1, Stamp $stamp2) {
                             return $stamp1->getTimeStamp() - $stamp2->getTimeStamp();
                         }));
     }
 
-    public function performTask(BoringTask $task) {
-        $officerFunction = $this->bureocratOfficerIncharge->getFunction();
+    public function performTask(Form $task) {
+        $officerFunction = $this->BureaucratOfficerIncharge->getFunction();
         
         if(!$officerFunction->shouldBeExecuted($task, $this)){
             return;
@@ -52,7 +52,7 @@ class BureocratProcess
         } catch (RecoverableTaskFailedException $exc) {
             $this->stamp(Stamp::STATUS_FAILED_RESUMABLE, $exc->getPrevious()->getMessage());
             throw $exc;
-        } catch (\Hermes\Exceptions\DefinitiveTaskFailedException $exc){
+        } catch (\Hermes\Bureau\Exceptions\DefinitiveTaskFailedException $exc){
             $this->stamp(Stamp::STATUS_FAILED_DEFINITIVE, $exc->getPrevious()->getMessage());
             throw $exc;
         }catch (\Exception $exc){
@@ -73,8 +73,8 @@ class BureocratProcess
         return Enumerable::from($this->stamps);
     }
 
-    function getBureocratOfficerIncharge(): BureocratOfficer {
-        return $this->bureocratOfficerIncharge;
+    function getBureaucratOfficerIncharge(): BureaucratOfficer {
+        return $this->BureaucratOfficerIncharge;
     }
 
 }

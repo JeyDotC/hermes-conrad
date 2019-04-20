@@ -1,6 +1,6 @@
 <?php
 
-namespace Hermes\Exceptions;
+namespace Hermes\Bureau\Exceptions;
 
 /**
  * Description of RecoverableTaskFailed

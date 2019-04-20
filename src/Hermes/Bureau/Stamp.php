@@ -1,6 +1,6 @@
 <?php
 
-namespace Hermes\ValueObjects;
+namespace Hermes\Bureau;
 
 /**
  * Description of Stamp

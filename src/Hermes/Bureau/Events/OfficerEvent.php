@@ -1,10 +1,10 @@
 <?php
 
-namespace Hermes\Events;
+namespace Hermes\Bureau\Events;
 
-use Hermes\Entities\BoringTask;
-use Hermes\Entities\BureocratOfficer;
-use Hermes\Entities\InProgressProcedure;
+use Hermes\Bureau\Form;
+use Hermes\Bureau\BureaucratOfficer;
+use Hermes\Bureau\Procedure;
 
 /**
  * Description of OfficerEvent
@@ -16,27 +16,27 @@ abstract class OfficerEvent extends ProcedureEvent
 
     /**
      *
-     * @var BureocratOfficer
+     * @var BureaucratOfficer
      */
     private $officer;
 
     /**
      *
-     * @var BoringTask
+     * @var Form
      */
     private $task;
 
-    public function __construct(InProgressProcedure $procedure, BureocratOfficer $officer, BoringTask $task) {
+    public function __construct(Procedure $procedure, BureaucratOfficer $officer, Form $task) {
         parent::__construct($procedure); 
         $this->officer = $officer;
         $this->task = $task;
     }
 
-    function getOfficer(): BureocratOfficer {
+    function getOfficer(): BureaucratOfficer {
         return $this->officer;
     }
 
-    function getTask(): BoringTask {
+    function getTask(): Form {
         return $this->task;
     }
 

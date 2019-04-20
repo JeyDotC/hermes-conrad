@@ -1,20 +1,20 @@
 <?php
 
-namespace Hermes\Services;
+namespace Hermes\Bureau\Services;
 
 use Exception;
-use Hermes\Entities\BureocratProcess;
-use Hermes\Entities\InProgressProcedure;
-use Hermes\Events\OfficerCompletedEvent;
-use Hermes\Events\OfficerFailedEvent;
-use Hermes\Events\ProcedureStartedEvent;
+use Hermes\Bureau\Process;
+use Hermes\Bureau\Procedure;
+use Hermes\Bureau\Events\OfficerCompletedEvent;
+use Hermes\Bureau\Events\OfficerFailedEvent;
+use Hermes\Bureau\Events\ProcedureStartedEvent;
 
 /**
- * Description of BureocratProcessRunner
+ * Description of BureaucratProcessRunner
  *
  * @author jguevara
  */
-class BureocratProcedureRunner
+class BureaucratProcedureRunner implements IBureaucratProcedureRunner
 {
     private $officerCompletedTaskListeners = [];
     
@@ -22,19 +22,19 @@ class BureocratProcedureRunner
     
     private $procedureStartedListeners = [];
     
-    public function run(InProgressProcedure $procedure){
+    public function run(Procedure $procedure){
         
         $this->procedureStarted(new ProcedureStartedEvent($procedure));
 
-        foreach ($procedure->getProcesses() as /** @var BureocratProcess $process */ $process) {
+        foreach ($procedure->getProcesses() as /** @var Process $process */ $process) {
 
-            $task = $procedure->getBoringTask();
+            $form = $procedure->getForm();
             
             try {
-                $process->performTask($task);
-                $this->officerCompleted(new OfficerCompletedEvent($procedure, $process->getBureocratOfficerIncharge(), $task));
+                $process->performTask($form);
+                $this->officerCompleted(new OfficerCompletedEvent($procedure, $process->getBureaucratOfficerIncharge(), $form));
             } catch (Exception $ex) {
-                $officerFailed = new OfficerFailedEvent($ex, $procedure, $process->getBureocratOfficerIncharge(), $task);
+                $officerFailed = new OfficerFailedEvent($ex, $procedure, $process->getBureaucratOfficerIncharge(), $form);
                 $this->officerFailed($officerFailed);
                 
                 $actionToTake = $officerFailed->getActionToTake();
@@ -50,17 +50,17 @@ class BureocratProcedureRunner
         }
     }
     
-    public function onProcedureStarted(callable $listener){
+    public function onProcedureStarted(callable $listener): IBureaucratProcedureRunner{
         $this->procedureStartedListeners[] = $listener;
         return $this;
     }
     
-    public function onOfficerCompleted(callable $listener){
+    public function onOfficerCompleted(callable $listener): IBureaucratProcedureRunner{
         $this->officerCompletedTaskListeners[] = $listener;
         return $this;
     }
     
-    public function onOfficerFailed(callable $listener){
+    public function onOfficerFailed(callable $listener): IBureaucratProcedureRunner {
         $this->officerFailedTaskListeners[] = $listener;
         return $this;
     }

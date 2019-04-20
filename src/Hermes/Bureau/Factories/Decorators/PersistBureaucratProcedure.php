@@ -1,19 +1,19 @@
 <?php
 
-namespace Hermes\Factories\Decorators;
+namespace Hermes\Bureau\Factories\Decorators;
 
-use Hermes\Events\OfficerEvent;
-use Hermes\Events\ProcedureStartedEvent;
-use Hermes\Factories\IBureocratProcedureRunnerDecorator;
-use Hermes\Repositories\IProcedureRepository;
-use Hermes\Services\BureocratProcedureRunner;
+use Hermes\Bureau\Events\OfficerEvent;
+use Hermes\Bureau\Events\ProcedureStartedEvent;
+use Hermes\Bureau\Factories\IBureaucratProcedureRunnerDecorator;
+use Hermes\Bureau\Repositories\IProcedureRepository;
+use Hermes\Bureau\Services\BureaucratProcedureRunner;
 
 /**
- * Description of PersistBureocratProcedure
+ * Description of PersistBureaucratProcedure
  *
  * @author jguevara
  */
-class PersistBureocratProcedure implements IBureocratProcedureRunnerDecorator
+class PersistBureaucratProcedure implements IBureaucratProcedureRunnerDecorator
 {
 
     /**
@@ -27,7 +27,7 @@ class PersistBureocratProcedure implements IBureocratProcedureRunnerDecorator
     }
 
     //put your code here
-    public function decorate(BureocratProcedureRunner $runner) {
+    public function decorate(BureaucratProcedureRunner $runner) {
         $updateProcedureOnOfficerEvent = function(OfficerEvent $event){
             $this->procedureRepository->update($event->getProcedure());
         };
