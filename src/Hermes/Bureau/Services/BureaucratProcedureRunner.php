@@ -25,10 +25,9 @@ class BureaucratProcedureRunner implements IBureaucratProcedureRunner
     public function run(Procedure $procedure){
         
         $this->procedureStarted(new ProcedureStartedEvent($procedure));
-
-        foreach ($procedure->getProcesses() as /** @var Process $process */ $process) {
-
-            $form = $procedure->getForm();
+        $form = $procedure->getForm();
+        
+        foreach ($procedure->getStartableProcesses() as /** @var Process $process */ $process) {
             
             try {
                 $process->performTask($form);

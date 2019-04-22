@@ -12,7 +12,7 @@ use JeyDotC\IEnumerable;
 class Procedure
 {
 
-    private $id;
+    private $procedureNumber;
     private $description;
 
     /**
@@ -27,15 +27,15 @@ class Procedure
      */
     private $processes;
 
-    public function __construct($id, Form $form, IEnumerable $BureaucratProcesses, string $description = '') {
-        $this->id = $id;
+    public function __construct($procedureNumber, Form $form, IEnumerable $BureaucratProcesses, string $description = '') {
+        $this->procedureNumber = $procedureNumber;
         $this->form = $form;
         $this->description = $description;
         $this->processes = $BureaucratProcesses;
     }
 
-    public function getId() {
-        return $this->id;
+    public function getProcedureNumber() {
+        return $this->procedureNumber;
     }
 
     public function getForm(): Form {
@@ -49,7 +49,13 @@ class Procedure
     public function getProcesses(): IEnumerable {
         return $this->processes;
     }
-
+    
+    public function getStartableProcesses(): IEnumerable {
+        return $this->processes->where(function(Process $process){
+            return $process->canPerformTask($this->form);
+        });
+    }
+    
     function hasProcess(BureaucratOfficer $BureaucratInCharge) {
         return $this->processes->any(function(Process $process) use ($BureaucratInCharge) {
                     return $process->getBureaucratOfficerIncharge()->getId() == $BureaucratInCharge->getId();

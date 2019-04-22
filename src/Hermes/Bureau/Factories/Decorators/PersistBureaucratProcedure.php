@@ -35,7 +35,7 @@ class PersistBureaucratProcedure implements IBureaucratProcedureRunnerDecorator
         $runner->onProcedureStarted(function(ProcedureStartedEvent $event) {
             $procedure = $event->getProcedure();
 
-            if ($procedure->getId() === 0) {
+            if ($procedure->getProcedureNumber() === 0) {
                 $this->procedureRepository->save($procedure);
             }
         })

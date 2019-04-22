@@ -15,7 +15,11 @@ use JeyDotC\IList;
 class Form
 {
 
-    private $id;
+    /**
+     *
+     * @var int
+     */
+    private $formNumber;
 
     /**
      *
@@ -23,17 +27,17 @@ class Form
      */
     private $components;
 
-    public static function create($id = 0): Form {
-        return new static($id, EnumerableList::empty());
+    public static function create($formNumber = 0): Form {
+        return new static($formNumber, EnumerableList::empty());
     }
 
     function __construct($id, IList $components) {
-        $this->id = $id;
+        $this->formNumber = $id;
         $this->components = $components;
     }
 
-    function getId() {
-        return $this->id;
+    function getFormNumber() {
+        return $this->formNumber;
     }
 
     function hasComponent($className): bool {

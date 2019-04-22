@@ -39,6 +39,10 @@ class Process
                             return $stamp1->getTimeStamp() - $stamp2->getTimeStamp();
                         }));
     }
+    
+    public function canPerformTask(Form $task): bool {
+        return $this->BureaucratOfficerIncharge->getFunction()->shouldBeExecuted($task, $this);
+    }
 
     public function performTask(Form $task) {
         $officerFunction = $this->BureaucratOfficerIncharge->getFunction();
