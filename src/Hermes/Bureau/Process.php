@@ -40,8 +40,14 @@ class Process
                         }));
     }
     
+    public function isFinalized(): bool {
+        return $this->getLastStamp()->getIsFinalized();
+    }
+
+
     public function canPerformTask(Form $task): bool {
-        return $this->BureaucratOfficerIncharge->getFunction()->shouldBeExecuted($task, $this);
+        return !$this->isFinalized() &&
+                $this->BureaucratOfficerIncharge->getFunction()->shouldBeExecuted($task, $this);
     }
 
     public function performTask(Form $task) {
@@ -57,7 +63,7 @@ class Process
             $this->stamp(Stamp::STATUS_FAILED_RESUMABLE, $exc->getPrevious()->getMessage());
             throw $exc;
         } catch (\Hermes\Bureau\Exceptions\DefinitiveTaskFailedException $exc){
-            $this->stamp(Stamp::STATUS_FAILED_DEFINITIVE, $exc->getPrevious()->getMessage());
+            $this->finalStamp(Stamp::STATUS_FAILED_DEFINITIVE, $exc->getPrevious()->getMessage());
             throw $exc;
         }catch (\Exception $exc){
             $this->stamp(Stamp::STATUS_FAILED_RESUMABLE, $exc->getMessage());
@@ -67,6 +73,10 @@ class Process
 
     public function stamp(string $status, string $notes = '') {
         $this->stamps->add(new Stamp(time(), $status, $notes));
+    }
+    
+    public function finalStamp(string $status, string $notes = '') {
+        $this->stamps->add(new Stamp(time(), $status, $notes, true));
     }
 
     public function getLastStamp(): Stamp {

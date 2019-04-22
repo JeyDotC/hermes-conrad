@@ -16,4 +16,6 @@ interface IProcedureRepository
     public function update(Procedure $existingProcedure);
     
     public function all(): IEnumerable;
+    
+    public function getRunnableProcedures(): IEnumerable;
 }

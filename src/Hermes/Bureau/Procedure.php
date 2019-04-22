@@ -26,12 +26,24 @@ class Procedure
      * @var IEnumerable of BureaucratProcesses
      */
     private $processes;
+    
+    private $officerCompletedTaskListeners = [];
+    
+    private $officerFailedTaskListeners = [];
+    
+    private $procedureStartedListeners = [];
 
     public function __construct($procedureNumber, Form $form, IEnumerable $BureaucratProcesses, string $description = '') {
         $this->procedureNumber = $procedureNumber;
         $this->form = $form;
         $this->description = $description;
         $this->processes = $BureaucratProcesses;
+    }
+    
+    public function getIsFinalized(){
+        return $this->processes->all(function(Process $process){
+            return $process->isFinalized();
+        });
     }
 
     public function getProcedureNumber() {
@@ -78,6 +90,65 @@ class Procedure
                         'taskStatus' => $status
                     ];
                 });
+    }
+    
+    public function run(){
+        
+        $this->procedureStarted(new ProcedureStartedEvent($this));
+        
+        foreach ($this->getStartableProcesses() as /** @var Process $process */ $process) {
+            
+            try {
+                $process->performTask($this->form);
+                $this->officerCompleted(new OfficerCompletedEvent($this, $process->getBureaucratOfficerIncharge(), $this->form));
+            } catch (Exception $ex) {
+                $officerFailed = new OfficerFailedEvent($ex, $this, $process->getBureaucratOfficerIncharge(), $this->form);
+                $this->officerFailed($officerFailed);
+                
+                $actionToTake = $officerFailed->getActionToTake();
+                
+                if($actionToTake == OfficerFailedEvent::CONTINUE_PROCESS){
+                    continue;
+                }else if($actionToTake == OfficerFailedEvent::FINISH_SILENTLY){
+                    return;
+                }else {
+                    throw $ex;
+                }
+            }
+        }
+    }
+    
+    public function onProcedureStarted(callable $listener): IBureaucratProcedureRunner{
+        $this->procedureStartedListeners[] = $listener;
+        return $this;
+    }
+    
+    public function onOfficerCompleted(callable $listener): IBureaucratProcedureRunner{
+        $this->officerCompletedTaskListeners[] = $listener;
+        return $this;
+    }
+    
+    public function onOfficerFailed(callable $listener): IBureaucratProcedureRunner {
+        $this->officerFailedTaskListeners[] = $listener;
+        return $this;
+    }
+    
+    private function procedureStarted(ProcedureStartedEvent $event){
+        foreach ($this->procedureStartedListeners as $listener){
+            $listener($event);
+        }
+    }
+    
+    private function officerCompleted(OfficerCompletedEvent $event){
+        foreach ($this->officerCompletedTaskListeners as $listener){
+            $listener($event);
+        }
+    }
+    
+     private function officerFailed(OfficerFailedEvent $event){
+        foreach ($this->officerFailedTaskListeners as $listener){
+            $listener($event);
+        }
     }
 
 }

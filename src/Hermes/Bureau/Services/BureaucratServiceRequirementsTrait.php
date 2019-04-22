@@ -22,8 +22,6 @@ trait BureaucratServiceRequirementsTrait {
                 ->all(function (string $className) use($form){
                     return $form->hasComponent($className);
                 });
-    }
-    
-    
+    }    
 
 }

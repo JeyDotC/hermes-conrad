@@ -21,15 +21,17 @@ final class Stamp
     private $timeStamp;
     private $status;
     private $notes;
+    private $isFinalized = false;
 
     public static function empty() {
         return new Stamp(0, self::STATUS_NOT_STARTED);
     }
 
-    public function __construct(int $timeStamp, $status, $notes = '') {
+    public function __construct(int $timeStamp, $status, $notes = '', bool $isFinalized = false) {
         $this->timeStamp = $timeStamp;
         $this->status = $status;
         $this->notes = $notes;
+        $this->isFinalized = $isFinalized;
     }
 
     public function getTimeStamp(): int {
@@ -43,5 +45,8 @@ final class Stamp
     public function getNotes() {
         return $this->notes;
     }
-
+    
+    public function getIsFinalized(): bool {
+        return $this->isFinalized;
+    }
 }
