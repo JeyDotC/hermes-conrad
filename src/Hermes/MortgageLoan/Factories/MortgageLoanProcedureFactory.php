@@ -9,10 +9,12 @@
 namespace MortgageLoan\Factories;
 
 use BadMethodCallException;
+use Hermes\Bureau\BureaucratOfficer;
 use Hermes\Bureau\Form;
 use Hermes\Bureau\Procedure;
+use Hermes\Bureau\Process;
+use Hermes\Bureau\Repositories\IBureaucratOfficerRepository;
 use Hermes\Bureau\Services\BureaucratServiceRequirementsTrait;
-use JeyDotC\Enumerable;
 use MortgageLoan\BureaucratServices\CheckForActualPropertyWorth;
 use MortgageLoan\BureaucratServices\CheckForCreditBehaviorHistory;
 use MortgageLoan\BureaucratServices\CheckForCriminalRecord;
@@ -37,29 +39,48 @@ class MortgageLoanProcedureFactory {
 
     use BureaucratServiceRequirementsTrait;
 
+    private static $requireComponents = [
+        PersonalInfo::class,
+        ContactInfo::class,
+        Address::class,
+        JobInfo::class,
+        IncomeInfo::class,
+        ExpensesInfo::class,
+        CreditLine::class,
+        Property::class
+    ];
+    
+    private static $requiredServices = [
+        CheckPersonalInfoIsTrue::class,
+        CheckForCriminalRecord::class,
+        CheckForCreditBehaviorHistory::class,
+        CheckLoanViability::class,
+        CheckForActualPropertyWorth::class,
+        CheckPropertySaleAvailability::class
+    ];
+
+    /**
+     *
+     * @var IBureaucratOfficerRepository
+     */
+    private $bureaucratOfficerRepository;
+
+    public function __construct(IBureaucratOfficerRepository $bureaucratOfficerRepository) {
+        $this->bureaucratOfficerRepository = $bureaucratOfficerRepository;
+    }
+
     public function createMortgageLoanProcedure(Form $form, string $description = ''): Procedure {
 
-        if (!$this->requireCompoents($form, [
-                    PersonalInfo::class,
-                    ContactInfo::class,
-                    Address::class,
-                    JobInfo::class,
-                    IncomeInfo::class,
-                    ExpensesInfo::class,
-                    CreditLine::class,
-                    Property::class
-                ])) {
-            throw  new BadMethodCallException("Missing required form components.");
+        if (!$this->requireCompoents($form, self::$requireComponents)) {
+            throw new BadMethodCallException("Missing required form components.");
         }
 
-        return new Procedure(0, $form, Enumerable::from([
-            new CheckPersonalInfoIsTrue(),
-            new CheckForCriminalRecord(),
-            new CheckForCreditBehaviorHistory(),
-            new CheckLoanViability(),
-            new CheckForActualPropertyWorth(),
-            new CheckPropertySaleAvailability()
-        ]), $description);
+        $processes = $this->bureaucratOfficerRepository->getOfficersThatProvideTheseServices(self::$requiredServices)
+                ->select(function (BureaucratOfficer $officer) {
+                    return Process::create($officer);
+                });
+
+        return new Procedure(0, $form, $processes, $description);
     }
 
 }
