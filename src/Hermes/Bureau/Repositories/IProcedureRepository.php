@@ -11,6 +11,8 @@ use JeyDotC\IEnumerable;
  */
 interface IProcedureRepository
 {
+    public function getByNumber(int $procedureNumber): Procedure;
+    
     public function add(Procedure $newProcedure): Procedure;
     
     public function update(Procedure $existingProcedure);
